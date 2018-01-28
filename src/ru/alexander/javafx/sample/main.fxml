@@ -5,10 +5,10 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import org.controlsfx.control.textfield.CustomTextField?>
 
 <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.alexander.javafx.sample.controller.MainController">
     <children>
@@ -33,7 +33,7 @@
         </HBox>
         <AnchorPane maxHeight="30.0" prefHeight="100.0">
             <children>
-                <TextField fx:id="txtSearch" prefHeight="31.0" prefWidth="293.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="80.0" />
+            <CustomTextField fx:id="txtSearch" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="80.0" />
                 <Button fx:id="btnSearch" layoutX="266.0" mnemonicParsing="false" text="Поиск" AnchorPane.rightAnchor="0.0" />
             </children>
             <VBox.margin>

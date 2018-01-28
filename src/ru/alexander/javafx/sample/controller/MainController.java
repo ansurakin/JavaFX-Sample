@@ -6,9 +6,11 @@
 package ru.alexander.javafx.sample.controller;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import javafx.beans.property.ObjectProperty;
 import javafx.collections.ListChangeListener;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -26,6 +28,8 @@ import javafx.stage.Stage;
 import javafx.event.EventHandler;
 import javafx.fxml.Initializable;
 import javafx.scene.input.MouseEvent;
+import org.controlsfx.control.textfield.CustomTextField;
+import org.controlsfx.control.textfield.TextFields;
 import ru.alexander.javafx.sample.interfaces.impl.CollectionAddressBook;
 import ru.alexander.javafx.sample.object.Person;
 
@@ -51,7 +55,7 @@ public class MainController implements Initializable{
     private Button btnDelete;
 
     @FXML
-    private TextField txtSearch;
+    private CustomTextField txtSearch;
 
     @FXML
     private Button btnSearch;
@@ -123,6 +127,16 @@ public class MainController implements Initializable{
             e.printStackTrace();
         }
     }
+    
+    private void setupClearButtonField(CustomTextField customTextField) {
+        try {
+            Method m = TextFields.class.getDeclaredMethod("setupClearButtonField", TextField.class, ObjectProperty.class);
+            m.setAccessible(true);
+            m.invoke(null, customTextField, customTextField.rightProperty());
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
 
     private void updateCountLabel() {
         labelCount.setText(this.resourceBundle.getString("count") + ": " + addressBookImpl.getPersonList().size());
@@ -182,6 +196,7 @@ public class MainController implements Initializable{
         
         columnFIO.setCellValueFactory(new PropertyValueFactory<Person, String>("fio"));
         columnPhone.setCellValueFactory(new PropertyValueFactory<Person, String>("phone"));
+        setupClearButtonField(txtSearch);
         initListeners();
         fillData();
         initLoader();
