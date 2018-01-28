@@ -6,6 +6,9 @@
 package ru.alexander.javafx.sample.controller;
 
 import java.io.IOException;
+import java.net.URL;
+import java.util.Locale;
+import java.util.ResourceBundle;
 import javafx.collections.ListChangeListener;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -21,6 +24,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.event.EventHandler;
+import javafx.fxml.Initializable;
 import javafx.scene.input.MouseEvent;
 import ru.alexander.javafx.sample.interfaces.impl.CollectionAddressBook;
 import ru.alexander.javafx.sample.object.Person;
@@ -30,7 +34,7 @@ import ru.alexander.javafx.sample.object.Person;
  *
  * @author Alex
  */
-public class MainController {
+public class MainController implements Initializable{
 
     private CollectionAddressBook addressBookImpl = new CollectionAddressBook();
 
@@ -64,6 +68,7 @@ public class MainController {
     @FXML
     private Label labelCount;
 
+    private ResourceBundle resourceBundle;
 
 
     private Parent fxmlEdit;
@@ -77,15 +82,6 @@ public class MainController {
 
     public void setMainStage(Stage mainStage) {
         this.mainStage = mainStage;
-    }
-
-    @FXML
-    private void initialize() {
-        columnFIO.setCellValueFactory(new PropertyValueFactory<Person, String>("fio"));
-        columnPhone.setCellValueFactory(new PropertyValueFactory<Person, String>("phone"));
-        initListeners();
-        fillData();
-        initLoader();
     }
 
     private void fillData() {
@@ -119,6 +115,7 @@ public class MainController {
         try {
 
             fxmlLoader.setLocation(getClass().getResource("edit.fxml"));
+            fxmlLoader.setResources(ResourceBundle.getBundle("ru.alexander.javafx.sample.bundle.Locale", new Locale("ru")));
             fxmlEdit = fxmlLoader.load();
             editDialogController = fxmlLoader.getController();
 
@@ -128,7 +125,7 @@ public class MainController {
     }
 
     private void updateCountLabel() {
-        labelCount.setText("Количество записей: " + addressBookImpl.getPersonList().size());
+        labelCount.setText(this.resourceBundle.getString("count") + ": " + addressBookImpl.getPersonList().size());
     }
 
     public void actionButtonPressed(ActionEvent actionEvent) {
@@ -166,7 +163,7 @@ public class MainController {
 
         if (editDialogStage==null) {
             editDialogStage = new Stage();
-            editDialogStage.setTitle("Редактирование записи");
+            editDialogStage.setTitle(this.resourceBundle.getString("edit"));
             editDialogStage.setMinHeight(150);
             editDialogStage.setMinWidth(300);
             editDialogStage.setResizable(false);
@@ -177,6 +174,17 @@ public class MainController {
 
         editDialogStage.showAndWait(); // для ожидания закрытия окна
 
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        this.resourceBundle = resources;
+        
+        columnFIO.setCellValueFactory(new PropertyValueFactory<Person, String>("fio"));
+        columnPhone.setCellValueFactory(new PropertyValueFactory<Person, String>("phone"));
+        initListeners();
+        fillData();
+        initLoader();
     }
 
 
