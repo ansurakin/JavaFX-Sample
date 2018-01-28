@@ -13,6 +13,9 @@ public class Person {
         this.phone = new SimpleStringProperty(phone);
     }
 
+    public Person() {        
+    }
+
     public String getFio() {
         return fio.get();
     }
