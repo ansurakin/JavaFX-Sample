@@ -6,7 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-public class Start extends Application {
+public class StartApplication extends Application {
     
     @Override
     public void start(Stage stage) throws Exception {
@@ -19,6 +19,12 @@ public class Start extends Application {
         
         stage.setScene(scene);
         stage.show();
+        
+        testData();
+    }
+    
+    private void testData() {
+
     }
 
     /**
