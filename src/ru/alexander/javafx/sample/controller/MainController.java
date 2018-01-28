@@ -34,18 +34,18 @@ import org.controlsfx.control.textfield.CustomTextField;
 import org.controlsfx.control.textfield.TextFields;
 import ru.alexander.javafx.sample.interfaces.impl.CollectionAddressBook;
 import ru.alexander.javafx.sample.object.Person;
+import ru.alexander.javafx.sample.util.DialogManager;
 
 /**
  * FXML Controller class
  *
  * @author Alex
  */
-public class MainController implements Initializable{
+public class MainController implements Initializable {
 
     private CollectionAddressBook addressBookImpl = new CollectionAddressBook();
 
     private Stage mainStage;
-
 
     @FXML
     private Button btnAdd;
@@ -76,7 +76,6 @@ public class MainController implements Initializable{
 
     private ResourceBundle resourceBundle;
 
-
     private Parent fxmlEdit;
 
     private FXMLLoader fxmlLoader = new FXMLLoader();
@@ -84,9 +83,8 @@ public class MainController implements Initializable{
     private EditDialogController editDialogController;
 
     private Stage editDialogStage;
-    
-    private ObservableList<Person> backupList;
 
+    private ObservableList<Person> backupList;
 
     public void setMainStage(Stage mainStage) {
         this.mainStage = mainStage;
@@ -107,17 +105,15 @@ public class MainController implements Initializable{
             }
         });
 
-
         tableAddressBook.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
                 if (event.getClickCount() == 2) {
-                    editDialogController.setPerson((Person)tableAddressBook.getSelectionModel().getSelectedItem());
+                    editDialogController.setPerson((Person) tableAddressBook.getSelectionModel().getSelectedItem());
                     showDialog();
                 }
             }
         });
-        
 
     }
 
@@ -133,13 +129,13 @@ public class MainController implements Initializable{
             e.printStackTrace();
         }
     }
-    
+
     private void setupClearButtonField(CustomTextField customTextField) {
         try {
             Method m = TextFields.class.getDeclaredMethod("setupClearButtonField", TextField.class, ObjectProperty.class);
             m.setAccessible(true);
             m.invoke(null, customTextField, customTextField.rightProperty());
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -157,6 +153,8 @@ public class MainController implements Initializable{
             return;
         }
 
+        Person selectedPerson = (Person) tableAddressBook.getSelectionModel().getSelectedItem();
+
         Button clickedButton = (Button) source;
 
         switch (clickedButton.getId()) {
@@ -167,21 +165,36 @@ public class MainController implements Initializable{
                 break;
 
             case "btnEdit":
-                editDialogController.setPerson((Person)tableAddressBook.getSelectionModel().getSelectedItem());
+                if (!personIsSelected(selectedPerson)) {
+                    return;
+                }
+
+                editDialogController.setPerson(selectedPerson);
                 showDialog();
                 break;
 
             case "btnDelete":
-                addressBookImpl.delete((Person)tableAddressBook.getSelectionModel().getSelectedItem());
+                if (!personIsSelected(selectedPerson)) {
+                    return;
+                }
+
+                addressBookImpl.delete(selectedPerson);
                 break;
         }
 
     }
 
+    private boolean personIsSelected(Person selectedPerson) {
+        if (selectedPerson == null) {
+            DialogManager.showInfoDialog(resourceBundle.getString("error"), resourceBundle.getString("select_person"));
+            return false;
+        }
+        return true;
+    }
 
     private void showDialog() {
 
-        if (editDialogStage==null) {
+        if (editDialogStage == null) {
             editDialogStage = new Stage();
             editDialogStage.setTitle(this.resourceBundle.getString("edit"));
             editDialogStage.setMinHeight(150);
@@ -199,7 +212,7 @@ public class MainController implements Initializable{
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.resourceBundle = resources;
-        
+
         columnFIO.setCellValueFactory(new PropertyValueFactory<Person, String>("fio"));
         columnPhone.setCellValueFactory(new PropertyValueFactory<Person, String>("phone"));
         setupClearButtonField(txtSearch);
@@ -207,19 +220,17 @@ public class MainController implements Initializable{
         fillData();
         initLoader();
     }
-    
+
     public void actionSearch(ActionEvent actionEvent) {
         addressBookImpl.getPersonList().clear();
 
         for (Person person : backupList) {
-            if (person.getFio().toLowerCase().contains(txtSearch.getText().toLowerCase()) ||
-                    person.getPhone().toLowerCase().contains(txtSearch.getText().toLowerCase())) {
+            if (person.getFio().toLowerCase().contains(txtSearch.getText().toLowerCase())
+                    || person.getPhone().toLowerCase().contains(txtSearch.getText().toLowerCase())) {
                 addressBookImpl.getPersonList().add(person);
             }
         }
 
-
     }
-
 
 }

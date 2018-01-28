@@ -10,6 +10,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import ru.alexander.javafx.sample.object.Person;
+import ru.alexander.javafx.sample.util.DialogManager;
 
 public class EditDialogController implements Initializable{
 
@@ -49,9 +50,21 @@ public class EditDialogController implements Initializable{
     }
 
     public void actionSave(ActionEvent actionEvent) {
+        if (!checkValues()){
+            return;
+        }
         person.setFio(txtFIO.getText());
         person.setPhone(txtPhone.getText());
         actionClose(actionEvent);
+    }
+
+    private boolean checkValues() {
+        if (txtFIO.getText().trim().length()==0 || txtPhone.getText().trim().length()==0){
+            DialogManager.showInfoDialog(resourceBundle.getString("error"), resourceBundle.getString("fill_field"));
+            return false;
+        }
+
+        return true;
     }
 
     @Override
